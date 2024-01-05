@@ -191,6 +191,8 @@
   (alm/leader-keys
       "o" '(:ignore t :wk "Org")
       "o a" '(org-agenda :wk "Org agenda")
+      "o f" '(org-agenda-file-to-front :wk "Org agenda file to front")
+      "o s" '(org-schedule :wk "Org schedule")
       "o c" '(org-toggle-checkbox :wk "Org toggle checkbox")
       "o e" '(org-export-dispatch :wk "Org export dispatch")
       "o i" '(org-toggle-item :wk "Org toggle item")
@@ -405,6 +407,7 @@ This package implements hiding or abbreviation of the modeline displays (lighter
   :config
   (setq dired-open-extensions '(("gif" . "vimiv")
                                 ("jpg" . "vimiv")
+                                ("pdf" . "zathura")
                                 ("png" . "vimiv")
                                 ("mkv" . "mpv")
                                 ("mp4" . "mpv"))))
