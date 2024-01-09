@@ -131,6 +131,7 @@
     (setq evil-collection-mode-list '(dashboard dired ibuffer))
     (evil-collection-init))
   (use-package evil-tutor)
+(evil-set-undo-system 'undo-redo)
 #+end_src
 
 
@@ -151,6 +152,7 @@
     "SPC" '(counsel-M-x :wk "Counsel M-x")
     "." '(find-file :wk "Find file")
     "f c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) :wk "Edit emacs config")
+    "f o" '((lambda () (interactive) (find-file "~/almlab_sync/org/main.org")) :wk "Edit main.org")
     "f r" '(counsel-recentf :wk "Find recent files")
     "TAB TAB" '(comment-line :wk "Comment lines"))
 
@@ -411,7 +413,7 @@ This package implements hiding or abbreviation of the modeline displays (lighter
                                 ("png" . "vimiv")
                                 ("mkv" . "mpv")
                                 ("mp4" . "mpv"))))
-
+;;(add-hook 'dired-mode-hook #'(turn-on-auto-revert-mode))
 (use-package peep-dired
   :after dired
   :hook (evil-normalize-keymaps . peep-dired-hook)
