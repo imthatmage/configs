@@ -18,6 +18,7 @@
 - [[#dashboard][DASHBOARD]]
 - [[#diminish][DIMINISH]]
 - [[#dired][DIRED]]
+- [[#ediff][EDIFF]]
 - [[#flycheck][FLYCHECK]]
 - [[#fonts][FONTS]]
   - [[#setting-the-font-face][Setting the Font Face]]
@@ -25,11 +26,14 @@
 - [[#ivy-counsel][IVY (COUNSEL)]]
 - [[#lsp][LSP]]
 - [[#language-support][LANGUAGE SUPPORT]]
+- [[#minibuffer-escape][MINIBUFFER ESCAPE]]
+- [[#modeline][MODELINE]]
 - [[#neotree][NEOTREE]]
 - [[#org-mode][ORG MODE]]
   - [[#enabling-table-of-contents][Enabling Table of Contents]]
   - [[#enabling-org-bullets][Enabling Org Bullets]]
   - [[#disable-electric-indent][Disable Electric Indent]]
+  - [[#org-level-headers][Org Level Headers]]
   - [[#source-code-block-tag-expansion][Source Code Block Tag Expansion]]
 - [[#org-roam][ORG-ROAM]]
 - [[#projectile][PROJECTILE]]
@@ -151,6 +155,14 @@
     :global-prefix "M-SPC") ;; access leader in insert mode
 
   (alm/leader-keys
+    "s" '(:ignore t :wk "Search")
+    "s d" '(dictionary-search :wk "Search dictionary")
+    "s m" '(man :wk "Man pages")
+    "s o" '(pdf-occur :wk "Pdf search lines matching STRING")
+    "s t" '(tldr :wk "Lookup TLDR docs for a command")
+    "s w" '(woman :wk "Similar to man but doesn't require man"))
+
+  (alm/leader-keys
     "SPC" '(counsel-M-x :wk "Counsel M-x")
     "." '(find-file :wk "Find file")
     "f c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) :wk "Edit emacs config")
@@ -180,6 +192,8 @@
       "e d" '(eval-defun :wk "Evaluate defun containing or after point")
       "e e" '(eval-expression :wk "Evaluate and elisp expression")
       "e h" '(counsel-esh-history :which-key "Eshell history")
+      "e f" '(ediff-files :wk "Run ediff on a pair of files")
+      "e F" '(ediff-files3 :wk "Run ediff on three files")
       "e l" '(eval-last-sexp :wk "Evaluate elisp expression before point")
       "e r" '(eval-region :wk "Evaluate elisp in region")
       "e s" '(eshell :which-key "Eshell"))
@@ -425,7 +439,6 @@ This package implements hiding or abbreviation of the modeline displays (lighter
   :config
   (setq dired-open-extensions '(("gif" . "vimiv")
                                 ("jpg" . "vimiv")
-                                ("pdf" . "zathura")
                                 ("png" . "vimiv")
                                 ("mkv" . "mpv")
                                 ("mp4" . "mpv"))))
@@ -443,6 +456,21 @@ This package implements hiding or abbreviation of the modeline displays (lighter
 ;;(add-hook 'peep-dired-hook 'evil-normalize-keymaps)
 
 #+end_src
+
+* EDIFF
+'ediff' is a diff program that is built into Emacs.  By default, 'ediff' splits files vertically and places the 'help' frame in its own window.  I have changed this so the two files are split horizontally and the 'help' frame appears as a lower split within the existing window.  Also, I create my own 'dt-ediff-hook' where I add 'j/k' for moving to next/prev diffs.  By default, this is set to 'n/p'.
+
+#+begin_src emacs-lisp
+(setq ediff-split-window-function 'split-window-horizontally
+      ediff-window-setup-function 'ediff-setup-windows-plain)
+
+(defun dt-ediff-hook ()
+  (ediff-setup-keymap)
+  (define-key ediff-mode-map "j" 'ediff-next-difference)
+  (define-key ediff-mode-map "k" 'ediff-previous-difference))
+
+(add-hook 'ediff-mode-hook 'dt-ediff-hook)
+#+end_src 
 
 * FLYCHECK
 Install =luacheck= from your Linux distro's repositories for flycheck to work correctly with lua files.  Install =python-pylint= for flycheck to work with python files.  Haskell works with flycheck as long as =haskell-ghc= or =haskell-stack-ghc= is installed.  For more information on language support for flycheck, [[https://www.flycheck.org/en/latest/languages.html][read this]].
@@ -597,6 +625,28 @@ Emacs has built-in programming language modes for Lisp, Scheme, DSSSL, Ada, ASM,
 (use-package python-mode)
 
 #+end_src
+
+* MINIBUFFER ESCAPE
+By default, Emacs requires you to hit ESC three times to escape quit the minibuffer.  
+
+#+begin_src emacs-lisp
+(global-set-key [escape] 'keyboard-escape-quit)
+#+end_src
+* MODELINE
+The modeline is the bottom status bar that appears in Emacs windows.  While you can create your own custom modeline, why go to the trouble when Doom Emacs already has a nice modeline package available.  For more information on what is available to configure in the Doom modeline, check out: [[https://github.com/seagle0128/doom-modeline][Doom Modeline]]
+
+#+begin_src emacs-lisp
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1)
+  :config
+  (setq doom-modeline-height 35      ;; sets modeline height
+        doom-modeline-bar-width 5    ;; sets right bar width
+        doom-modeline-persp-name t   ;; adds perspective name to modeline
+        doom-modeline-persp-icon t)) ;; adds folder icon next to persp name
+
+#+end_src
+
 * NEOTREE
 Neotree is a file tree viewer.  When you open neotree, it jumps to the current file thanks to neo-smart-open.  The neo-window-fixed-size setting makes the neotree width be adjustable.  NeoTree provides following themes: classic, ascii, arrow, icons, and nerd.  Theme can be configed by setting "two" themes for neo-theme: one for the GUI and one for the terminal.  I like to use 'SPC t' for 'toggle' keybindings, so I have used 'SPC t n' for toggle-neotree.
 
@@ -649,6 +699,18 @@ Org mode source blocks have some really weird and annoying default indentation b
 (setq org-edit-src-content-indentation 0)
 #+end_src
 
+** Org Level Headers
+#+begin_src emacs-lisp
+  (custom-set-faces
+   '(org-level-1 ((t (:inherit outline-1 :height 1.7))))
+   '(org-level-2 ((t (:inherit outline-2 :height 1.6))))
+   '(org-level-3 ((t (:inherit outline-3 :height 1.5))))
+   '(org-level-4 ((t (:inherit outline-4 :height 1.4))))
+   '(org-level-5 ((t (:inherit outline-5 :height 1.3))))
+   '(org-level-6 ((t (:inherit outline-5 :height 1.2))))
+   '(org-level-7 ((t (:inherit outline-5 :height 1.1)))))
+#+end_src
+
 ** Source Code Block Tag Expansion
 Org-tempo is not a separate package but a module within org that can be enabled.  Org-tempo allows for '<s' followed by TAB to expand to a begin_src tag.  Other expansions available include:
 
@@ -687,7 +749,6 @@ Org-tempo is not a separate package but a module within org that can be enabled.
   ;; If using org-roam-protocol
   ;; (require 'org-roam-protocol))
 #+end_src
-
 
 * PROJECTILE
 [[https://github.com/bbatsov/projectile][Projectile]] is a project interaction library for Emacs.  It should be noted that many projectile commands do not work if you have set "fish" as the "shell-file-name" for Emacs.  I had initially set "fish" as the "shell-file-name" in the Vterm section of this config, but oddly enough I changed it to "bin/sh" and projectile now works as expected, and Vterm still uses "fish" because my default user "sh" on my Linux system is "fish".

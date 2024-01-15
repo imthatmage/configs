@@ -93,6 +93,14 @@
     :global-prefix "M-SPC") ;; access leader in insert mode
 
   (alm/leader-keys
+    "s" '(:ignore t :wk "Search")
+    "s d" '(dictionary-search :wk "Search dictionary")
+    "s m" '(man :wk "Man pages")
+    "s o" '(pdf-occur :wk "Pdf search lines matching STRING")
+    "s t" '(tldr :wk "Lookup TLDR docs for a command")
+    "s w" '(woman :wk "Similar to man but doesn't require man"))
+
+  (alm/leader-keys
     "SPC" '(counsel-M-x :wk "Counsel M-x")
     "." '(find-file :wk "Find file")
     "f c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) :wk "Edit emacs config")
@@ -122,6 +130,8 @@
       "e d" '(eval-defun :wk "Evaluate defun containing or after point")
       "e e" '(eval-expression :wk "Evaluate and elisp expression")
       "e h" '(counsel-esh-history :which-key "Eshell history")
+      "e f" '(ediff-files :wk "Run ediff on a pair of files")
+      "e F" '(ediff-files3 :wk "Run ediff on three files")
       "e l" '(eval-last-sexp :wk "Evaluate elisp expression before point")
       "e r" '(eval-region :wk "Evaluate elisp in region")
       "e s" '(eshell :which-key "Eshell"))
@@ -326,7 +336,6 @@ one, an error is signaled."
   :config
   (setq dired-open-extensions '(("gif" . "vimiv")
                                 ("jpg" . "vimiv")
-                                ("pdf" . "zathura")
                                 ("png" . "vimiv")
                                 ("mkv" . "mpv")
                                 ("mp4" . "mpv"))))
@@ -342,6 +351,16 @@ one, an error is signaled."
 )
 
 ;;(add-hook 'peep-dired-hook 'evil-normalize-keymaps)
+
+(setq ediff-split-window-function 'split-window-horizontally
+      ediff-window-setup-function 'ediff-setup-windows-plain)
+
+(defun dt-ediff-hook ()
+  (ediff-setup-keymap)
+  (define-key ediff-mode-map "j" 'ediff-next-difference)
+  (define-key ediff-mode-map "k" 'ediff-previous-difference))
+
+(add-hook 'ediff-mode-hook 'dt-ediff-hook)
 
 (use-package flycheck
   :ensure t
@@ -463,6 +482,17 @@ one, an error is signaled."
 (use-package lua-mode)
 (use-package python-mode)
 
+(global-set-key [escape] 'keyboard-escape-quit)
+
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1)
+  :config
+  (setq doom-modeline-height 35      ;; sets modeline height
+        doom-modeline-bar-width 5    ;; sets right bar width
+        doom-modeline-persp-name t   ;; adds perspective name to modeline
+        doom-modeline-persp-icon t)) ;; adds folder icon next to persp name
+
 (use-package neotree
   :config
   (setq neo-smart-open t
@@ -490,6 +520,15 @@ one, an error is signaled."
 
 (electric-indent-mode -1)
 (setq org-edit-src-content-indentation 0)
+
+(custom-set-faces
+ '(org-level-1 ((t (:inherit outline-1 :height 1.7))))
+ '(org-level-2 ((t (:inherit outline-2 :height 1.6))))
+ '(org-level-3 ((t (:inherit outline-3 :height 1.5))))
+ '(org-level-4 ((t (:inherit outline-4 :height 1.4))))
+ '(org-level-5 ((t (:inherit outline-5 :height 1.3))))
+ '(org-level-6 ((t (:inherit outline-5 :height 1.2))))
+ '(org-level-7 ((t (:inherit outline-5 :height 1.1)))))
 
 (require 'org-tempo)
 
