@@ -31,9 +31,11 @@
   - [[#enabling-org-bullets][Enabling Org Bullets]]
   - [[#disable-electric-indent][Disable Electric Indent]]
   - [[#source-code-block-tag-expansion][Source Code Block Tag Expansion]]
+- [[#org-roam][ORG-ROAM]]
 - [[#projectile][PROJECTILE]]
 - [[#rainbow-mode][RAINBOW MODE]]
 - [[#reload-emacs][RELOAD EMACS]]
+- [[#smooth-scrolling][SMOOTH SCROLLING]]
 - [[#shells-and-terminals][SHELLS AND TERMINALS]]
   - [[#eshell][Eshell]]
   - [[#vterm][Vterm]]
@@ -189,6 +191,20 @@
     "h v" '(describe-variable :wk "Describe variable")
     ;;"h r r" '((lambda () (interactive) (load-file "~/.config/emacs/init.el")) :wk "Reload emacs config"))
     "h r r" '(reload-init-file :wk "Reload emacs config"))
+
+  (alm/leader-keys
+      "r" '(:ignore t :wk "Org Roam")
+      "r b" '(org-roam-buffer-toggle :wk "Org Roam toggle buffer")
+      "r f" '(org-roam-node-find :wk "Org Roam node find")
+      "r i" '(org-roam-node-insert :wk "Org Roam node insert")
+      "r w a" '(org-roam-dailies-goto-date :wk "Org Roam watch dailies on specific date")
+      "r w t" '(org-roam-dailies-goto-tomorrow :wk "Org Roam watch dailies tommorow")
+      "r w n" '(org-roam-dailies-goto-today :wk "Org Roam watch dailies today")
+      "r w y" '(org-roam-dailies-goto-yesterday :wk "Org Roam watch dailies yesterday")
+      "r a" '(org-roam-dailies-capture-date :wk "Org Roam dailies capture tommorow")
+      "r t" '(org-roam-dailies-capture-tomorrow :wk "Org Roam dailies capture tommorow")
+      "r n" '(org-roam-dailies-capture-today :wk "Org Roam dailies capture today")
+      "r y" '(org-roam-dailies-capture-yesterday :wk "Org Roam dailies capture yesterday"))
 
   (alm/leader-keys
       "o" '(:ignore t :wk "Org")
@@ -381,7 +397,7 @@ Emacs Dashboard is an extensible startup screen showing you recent files, bookma
     (setq dashboard-set-file-icons t)
     (setq dashboard-banner-logo-title "Emacs for life")
     ;;(setq dashboard-startup-banner 'logo) ;; use standard emacs logo as banner
-    (setq dashboard-startup-banner "~/.config/emacs/images/emacs-dash.png")  ;; use custom image as banner
+    (setq dashboard-startup-banner "~/.config/emacs/images/emacs-dash.svg")  ;; use custom image as banner
     (setq dashboard-center-content nil) ;; set to 't' for centered content
     (setq dashboard-items '((recents . 5)
                             (agenda . 5 )
@@ -654,12 +670,31 @@ Org-tempo is not a separate package but a module within org that can be enabled.
 (require 'org-tempo)
 #+end_src
 
+* ORG-ROAM
+#+begin_src emacs-lisp
+(use-package org-roam
+  :ensure t
+  :custom
+  (org-roam-dailies-capture-templates
+    '(("d" "default" entry "* %<%I:%M %p>: %?"
+       :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
+  (org-roam-directory (file-truename "~/org-roam"))
+  :config
+  (org-roam-setup))
+  ;; If you're using a vertical completion framework, you might want a more informative completion interface
+  ;; (setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
+  ;; (org-roam-db-autosync-mode)
+  ;; If using org-roam-protocol
+  ;; (require 'org-roam-protocol))
+#+end_src
+
 
 * PROJECTILE
 [[https://github.com/bbatsov/projectile][Projectile]] is a project interaction library for Emacs.  It should be noted that many projectile commands do not work if you have set "fish" as the "shell-file-name" for Emacs.  I had initially set "fish" as the "shell-file-name" in the Vterm section of this config, but oddly enough I changed it to "bin/sh" and projectile now works as expected, and Vterm still uses "fish" because my default user "sh" on my Linux system is "fish".
 
 #+begin_src emacs-lisp
 (use-package projectile
+  :diminish
   :config
   (projectile-mode 1))
 #+end_src
@@ -684,6 +719,14 @@ This is just an example of how to create a simple function in Emacs.  Use this f
   (load-file user-init-file))
 #+end_src
 
+* SMOOTH SCROLLING
+#+begin_src emacs-lisp
+(setq redisplay-dont-pause t
+  scroll-margin 8 
+  scroll-step 1
+  scroll-conservatively 10000
+  scroll-preserve-screen-position 1)
+#+end_src
 * SHELLS AND TERMINALS
 In my configs, all of my shells (bash, fish, zsh and the ESHELL) require my shell-color-scripts-git package to be installed.  On Arch Linux, you can install it from the AUR.  Otherwise, go to my shell-color-scripts repository on GitLab to get it.
 

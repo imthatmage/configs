@@ -69,6 +69,7 @@
 (use-package evil
     :init      ;; tweak evil's configuration before loading it
     (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
+    (setq evil-undo-system 'undo-redo)
     (setq evil-want-keybinding nil)
     (setq evil-vsplit-window-right t)
     (setq evil-split-window-below t)
@@ -95,6 +96,7 @@
     "SPC" '(counsel-M-x :wk "Counsel M-x")
     "." '(find-file :wk "Find file")
     "f c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) :wk "Edit emacs config")
+    "f o" '((lambda () (interactive) (find-file "~/almlab_sync/org/main.org")) :wk "Edit main.org")
     "f r" '(counsel-recentf :wk "Find recent files")
     "TAB TAB" '(comment-line :wk "Comment lines"))
 
@@ -133,8 +135,24 @@
     "h r r" '(reload-init-file :wk "Reload emacs config"))
 
   (alm/leader-keys
+      "r" '(:ignore t :wk "Org Roam")
+      "r b" '(org-roam-buffer-toggle :wk "Org Roam toggle buffer")
+      "r f" '(org-roam-node-find :wk "Org Roam node find")
+      "r i" '(org-roam-node-insert :wk "Org Roam node insert")
+      "r w a" '(org-roam-dailies-goto-date :wk "Org Roam watch dailies on specific date")
+      "r w t" '(org-roam-dailies-goto-tomorrow :wk "Org Roam watch dailies tommorow")
+      "r w n" '(org-roam-dailies-goto-today :wk "Org Roam watch dailies today")
+      "r w y" '(org-roam-dailies-goto-yesterday :wk "Org Roam watch dailies yesterday")
+      "r a" '(org-roam-dailies-capture-date :wk "Org Roam dailies capture tommorow")
+      "r t" '(org-roam-dailies-capture-tomorrow :wk "Org Roam dailies capture tommorow")
+      "r n" '(org-roam-dailies-capture-today :wk "Org Roam dailies capture today")
+      "r y" '(org-roam-dailies-capture-yesterday :wk "Org Roam dailies capture yesterday"))
+
+  (alm/leader-keys
       "o" '(:ignore t :wk "Org")
       "o a" '(org-agenda :wk "Org agenda")
+      "o f" '(org-agenda-file-to-front :wk "Org agenda file to front")
+      "o s" '(org-schedule :wk "Org schedule")
       "o c" '(org-toggle-checkbox :wk "Org toggle checkbox")
       "o e" '(org-export-dispatch :wk "Org export dispatch")
       "o i" '(org-toggle-item :wk "Org toggle item")
@@ -289,7 +307,7 @@ one, an error is signaled."
   (setq dashboard-set-file-icons t)
   (setq dashboard-banner-logo-title "Emacs for life")
   ;;(setq dashboard-startup-banner 'logo) ;; use standard emacs logo as banner
-  (setq dashboard-startup-banner "~/.config/emacs/images/emacs-dash.png")  ;; use custom image as banner
+  (setq dashboard-startup-banner "~/.config/emacs/images/emacs-dash.svg")  ;; use custom image as banner
   (setq dashboard-center-content nil) ;; set to 't' for centered content
   (setq dashboard-items '((recents . 5)
                           (agenda . 5 )
@@ -308,10 +326,11 @@ one, an error is signaled."
   :config
   (setq dired-open-extensions '(("gif" . "vimiv")
                                 ("jpg" . "vimiv")
+                                ("pdf" . "zathura")
                                 ("png" . "vimiv")
                                 ("mkv" . "mpv")
                                 ("mp4" . "mpv"))))
-
+;;(add-hook 'dired-mode-hook #'(turn-on-auto-revert-mode))
 (use-package peep-dired
   :after dired
   :hook (evil-normalize-keymaps . peep-dired-hook)
@@ -474,7 +493,23 @@ one, an error is signaled."
 
 (require 'org-tempo)
 
+(use-package org-roam
+  :ensure t
+  :custom
+  (org-roam-dailies-capture-templates
+    '(("d" "default" entry "* %<%I:%M %p>: %?"
+       :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
+  (org-roam-directory (file-truename "~/org-roam"))
+  :config
+  (org-roam-setup))
+  ;; If you're using a vertical completion framework, you might want a more informative completion interface
+  ;; (setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
+  ;; (org-roam-db-autosync-mode)
+  ;; If using org-roam-protocol
+  ;; (require 'org-roam-protocol))
+
 (use-package projectile
+  :diminish
   :config
   (projectile-mode 1))
 
@@ -487,6 +522,12 @@ one, an error is signaled."
   (interactive)
   (load-file user-init-file)
   (load-file user-init-file))
+
+(setq redisplay-dont-pause t
+  scroll-margin 8 
+  scroll-step 1
+  scroll-conservatively 10000
+  scroll-preserve-screen-position 1)
 
 (use-package eshell-syntax-highlighting
   :after esh-mode
