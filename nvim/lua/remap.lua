@@ -1,4 +1,6 @@
+-- standard remaps
 vim.g.mapleader = " "
+
 vim.keymap.set("n", "<leader>pv", vim.cmd.Ex) -- go to explorer
 
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
