@@ -10,10 +10,11 @@ swww img ~/almlab_sync/pictures/waves_haven.png &
 waybar &
 
 # emacs daemon
-/usr/bin/emacs --daemon
+usr/bin/emacs --daemon
 
 # notifications
 # dunst &
+#
 
 # dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP &
 sleep 1
