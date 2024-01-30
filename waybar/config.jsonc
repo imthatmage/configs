@@ -1,0 +1,131 @@
+{
+    "layer": "top",
+    "position": "top",
+    "mod": "dock",
+    "exclusive": true,
+    "passthrough": false,
+    "gtk-layer-shell": true,
+    "height": 0,
+    "modules-left": [
+        "custom/logo",
+        "clock",
+        "custom/weather",
+        "temperature",
+        "hyprland/workspaces"
+    ],
+    "modules-center": ["hyprland/window"],
+    "modules-right": [
+	//"mpris",
+        "tray",
+        "custom/timer",
+        "battery",
+        "disk",
+        "backlight",
+        "pulseaudio",
+        "pulseaudio#microphone"
+    ],
+
+    "hyprland/window": {
+        "format": "{}"
+    },
+    "hyprland/workspaces": {
+        "disable-scroll": true,
+	//"active-only": true,
+        //"all-outputs": true,
+        "on-click": "activate",
+        "format": "{icon}"
+    },
+
+    "custom/logo": {
+        "format": "󰣇 ",
+        "on-click": "~/.config/wofi/wofi-powermenu"
+    },
+
+    "custom/timer": {
+        "tooltip": false,
+        "min-length": 5,
+        "exec": "$HOME/.config/waybar/scripts/timer.sh",
+        "on-click": "date --date='30 minutes' +%s > /var/tmp/waybar_timer",
+        "on-click-right": "echo READY > /var/tmp/waybar_timer",
+        "on-click-middle": "date --date='1 minute' +%s > /var/tmp/waybar_timer",
+        "on-scroll-up": "$HOME/.config/waybar/scripts/waybar-timer-steps.sh up",
+        "on-scroll-down": "$HOME/.config/waybar/scripts/waybar-timer-steps.sh down",
+        "interval": 1
+    },
+
+    "custom/weather" : {
+        "tooltip" : true,
+        "format" : "{}",
+        "interval" : 30,
+        "exec" : "~/.config/waybar/scripts/waybar-wttr.py",
+        "return-type" : "json"
+    },
+    "disk": {
+        "interval": 30,
+        "format": "{free}",
+        "path": "/"
+    },
+    "temperature": {
+        // "thermal-zone": 2,
+        // "hwmon-path": "/sys/class/hwmon/hwmon2/temp1_input",
+        "critical-threshold": 80,
+        "format-critical": "{temperatureC}°C {icon}",
+        "format": "{temperatureC}°C {icon}",
+        "format-icons": ["", "", ""]
+    },
+    "tray": {
+        "icon-size": 13,
+        "spacing": 10
+    },
+    "clock": {
+        "format": "{: %R   %d/%m}",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
+    },
+    "backlight": {
+        "device": "intel_backlight",
+        "format": "{icon} {percent}%",
+        "format-icons": ["󰃞", "󰃟", "󰃝", "󰃠"],
+        "on-scroll-up": "brightnessctl set 1%+",
+        "on-scroll-down": "brightnessctl set 1%-",
+        "min-length": 6
+    },
+    "battery": {
+        "states": {
+            "good": 70,
+            "warning": 30,
+            "critical": 20
+        },
+        "format": "{icon} {capacity}%",
+        "format-charging": " {capacity}%",
+        "format-plugged": " {capacity}%",
+        "format-alt": "{time} {icon}",
+        "format-icons": ["", "", "", "", "", "", "", "", "", "", ""]
+    },
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "tooltip": false,
+        "format-muted": " Muted",
+        "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+        "on-scroll-up": "wpctl set-volume -l 1.4 @DEFAULT_AUDIO_SINK@ 5%+",
+        "on-scroll-down": "wpctl set-volume -l 1.4 @DEFAULT_AUDIO_SINK@ 5%-",
+        "scroll-step": 5,
+        "format-icons": {
+            "headphone": "",
+            "hands-free": "",
+            "headset": "",
+            "phone": "",
+            "portable": "",
+            "car": "",
+            "default": ["", "", ""]
+        }
+    },
+    "pulseaudio#microphone": {
+        "format": "{format_source}",
+        "format-source": " {volume}%",
+        "format-source-muted": " Muted",
+        "on-click": "wpctl set-mute @DEFAULT_SOURCE@ toggle",
+        "on-scroll-up": "wpctl set-volume -l 1.4 @DEFAULT_SOURCE@ 5%+",
+        "on-scroll-down": "wpctl set-volume -l 1.4 @DEFAULT_SOURCE@ 5%-",
+        "scroll-step": 5
+    },
+}
