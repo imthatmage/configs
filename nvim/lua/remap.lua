@@ -23,3 +23,6 @@ vim.keymap.set({"n", "v"}, "<leader>d", [["_d]])
 
 -- Find commands with Telescope
 vim.api.nvim_set_keymap("n", "<leader><tab>", "<Cmd>lua require('telescope.builtin').commands()<CR>", {noremap=false})
+
+-- Dismiss Noice Message
+vim.keymap.set("n", "<leader>nd", "<cmd>NoiceDismiss<CR>", {desc = "Dismiss Noice Message"})
