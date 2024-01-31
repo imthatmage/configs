@@ -23,3 +23,6 @@ vim.opt.hlsearch = false
 vim.opt.incsearch = true
 
 vim.opt.termguicolors = true
+
+-- for obsidian.nvim
+vim.opt.conceallevel = 1

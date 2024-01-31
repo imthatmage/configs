@@ -42,6 +42,9 @@ return {
             vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, bufopts)
             vim.keymap.set("n", "<leader>D", vim.lsp.buf.type_definition, bufopts)
             vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, bufopts)
+            -- Diagnostic keymaps
+            vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
+            vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
         end,
     },
 }
