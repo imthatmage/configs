@@ -14,6 +14,7 @@ return {
                     "pyright",
                     "sqlls",
                     "rust_analyzer",
+                    "biome",
                 },
             })
         end,
@@ -34,6 +35,10 @@ return {
             lspconfig.rust_analyzer.setup({
                 capabilities = capabilities
             })
+            lspconfig.biome.setup({
+                capabilities = capabilities
+            })
+
             vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
             vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
             vim.keymap.set("n", "gD", vim.lsp.buf.declaration, bufopts)
