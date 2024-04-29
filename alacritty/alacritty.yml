@@ -35,20 +35,20 @@ colors:
 
 font:
   normal:
-    family: "Hack Nerd Font"
+    family: "0xProto Nerd Font"
     style: Regular
   bold:
-    family: "Hack Nerd Font"
+    family: "0xProto Nerd Font"
     style: Bold
   italic:
-    family: "Hack Nerd Font"
+    family: "0xProto Nerd Font"
     style: Italic
   bold_italic:
-    family: "Hack Nerd Font"
+    family: "0xProto Nerd Font"
     style: Bold Italic
 
   # Point size
-  size: 10
+  size: 9
 
   offset:
     x: 0
@@ -58,7 +58,7 @@ font:
     y: 0
 
 window:
-  opacity: 0.8
+  opacity: 0.86
   position:
     x: 950
     y: 200
